@@ -355,7 +355,7 @@
 </head>
 <body>
     <header>
-        <h1> My Game Collection </h1>
+        <h1> Game Archives </h1>
     </header>
 
     <div class="container">
