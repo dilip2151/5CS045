@@ -376,6 +376,7 @@
         <form action="search.php" method="post">
         <input type="text" name="keywords" placeholder="Search for a game...">
         <input type="submit" value="Search"> </form>
+	 
 	 <a href="add-game-form.php" class="btn btn-primary">Add a game</a>
 
 
@@ -408,7 +409,7 @@
                     </td>
                     <td data-label="Release Date"><?= htmlspecialchars($row['released_date']) ?></td>
                     <td data-label="IMDB Rating">
-                        <span style="color: #FF1493; text-shadow: 0 0 10px rgba(255, 20, 147, 0.9);">
+                        <span style="color: #FF1493; text-shadow: 0 0 10px rgba(255, 20, 14, 0.9);">
                             <?= htmlspecialchars($row['rating']) ?>
                         </span>
                     </td>
@@ -459,6 +460,6 @@
     </div>
 
     <footer>
-        <p>&copy; <?= date("Y") ?> **Game Archive** | Data Stable</p> </footer>
+        <p>&copy; <?= date("Y") ?> **Game Archive** </p> </footer>
 </body>
 </html>
