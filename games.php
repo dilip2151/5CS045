@@ -1,10 +1,26 @@
+<?php
+// PHP logic (Database connection and initial query) remains at the top
+$mysqli = new mysqli("localhost", "2407414", "Bandhana@123456", "db2407414");
+
+if ($mysqli->connect_errno) {
+    // Reverted to a standard, less dramatic error message
+    $error_message = "<p class='error-message'>ERROR: Failed to connect to MySQL: " . $mysqli->connect_error . "</p>";
+    $results = null; // Ensure results is null if connection fails
+} else {
+    // Run SQL query for the DEFAULT display (all games)
+    $sql = "SELECT game_ID, game_name, released_date, rating FROM games ORDER BY rating DESC";
+    $results = $mysqli->query($sql);
+    $error_message = '';
+}
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Archive</title>
-    <style>
+	<style>
         /* Base Palette: Dark Grey, Neon Pink (#FF1493), Cyan/Teal (#00CED1), Sand Text (#EAE0CF) */
 
         body {
@@ -105,6 +121,8 @@
             box-shadow: 0 0 8px #FF1493;
         }
 
+        /* Note: The live-search-input CSS is handled inline below for convenience,
+           but the general text input styles are kept here. */
         input[type="text"] {
             padding: 14px; /* Smaller padding */
             width: 350px; /* Slightly narrower input */
@@ -124,7 +142,7 @@
             box-shadow: 0 0 18px #FF1493, inset 0 0 10px #FF1493;
         }
         
-        /* --- Neon White Search Button Style --- */
+        /* --- Neon White Search Button Style --- (Not used for Ajax input, but kept for legacy form support) */
         input[type="submit"] {
             padding: 14px 30px; 
             background-color: #FFFFFF; /* White background */
@@ -287,14 +305,8 @@
                 font-size: 2.2em;
                 letter-spacing: 2px;
             }
-            input[type="text"] {
-                width: calc(100% - 30px);
-                margin-bottom: 10px;
-            }
-            input[type="submit"] {
-                width: calc(100% - 30px);
-                margin-left: 0;
-            }
+            /* Removed input[type="text"] and input[type="submit"] overrides here 
+               to let the inline style for live-search-input work better. */
             form {
                 padding: 15px;
             }
@@ -359,75 +371,37 @@
     </header>
 
     <div class="container">
-        <?php
-        // Connect to database
-        $mysqli = new mysqli("localhost", "2407414", "Bandhana@123456", "db2407414");
+        <?php if (!empty($error_message)) echo $error_message; ?>
 
-        if ($mysqli->connect_errno) {
-            // Reverted to a standard, less dramatic error message
-            echo "<p class='error-message'>ERROR: Failed to connect to MySQL: " . $mysqli->connect_error . "</p>";
-        }
+        <div class="search-container" style="margin-bottom: 20px;">
+            <input type="text" id="live-search-input" placeholder="Live search by game name..." autocomplete="off" style="
+                padding: 10px;
+                width: 100%;
+                max-width: 400px;
+                background: #1F2328;
+                border: 1px solid #4dd0e1; /* Neon Cyan border */
+                color: #EAE0CF;
+                font-size: 1rem;
+                box-shadow: 0 0 10px rgba(77, 208, 225, 0.5);
+                margin: 0 auto;
+                display: block;
+            ">
+        </div>
+        
+        <a href="add-game-form.php" class="btn btn-primary" style="display: block; text-align: center; margin-bottom: 20px;">Add a game</a>
 
-        // Run SQL query
-        $sql = "SELECT * FROM games ORDER BY rating DESC";
-        $results = isset($mysqli) && !$mysqli->connect_errno ? $mysqli->query($sql) : null;
-        ?>
-
-        <form action="search.php" method="post">
-        <input type="text" name="keywords" placeholder="Search for a game...">
-        <input type="submit" value="Search"> </form>
-	 
-	 <a href="add-game-form.php" class="btn btn-primary">Add a game</a>
-
-
-        <table>
+        <table class="game-table">
             <thead>
                 <tr>
                     <th> Game Name</th>
                     <th> Release Date</th>
                     <th> IMDB Rating</th>
-					
-                </tr>
+                    <th> Actions</th> </tr>
             </thead>
-            <tbody>
+            <tbody id="game-results-body"> 
                 <?php
-                // Mock data if the connection failed, to show the style
-                if (!$results || (isset($results) && $results->num_rows === 0)) {
-                    $mock_data = [
-                        ['game_name' => 'Desert Runner 404', 'released_date' => '2077-10-23', 'rating' => '9.2'],
-                        ['game_name' => 'Spice Harvester: The Board Game', 'released_date' => '1984-12-18', 'rating' => '8.8'],
-                        ['game_name' => 'Neon District Protocol', 'released_date' => '2049-05-15', 'rating' => '7.9'],
-                        ['game_name' => 'Fremen Tactics Simulator', 'released_date' => '2025-01-01', 'rating' => '9.5']
-                    ];
-                    foreach ($mock_data as $index => $row):
-                ?>
-                <tr>
-                    <td data-label="Game Name">
-                        <a href="details.php?id=<?= $index + 100 ?>">
-                            <?= htmlspecialchars($row['game_name']) ?>
-                        </a>
-                    </td>
-                    <td data-label="Release Date"><?= htmlspecialchars($row['released_date']) ?></td>
-                    <td data-label="IMDB Rating">
-                        <span style="color: #FF1493; text-shadow: 0 0 10px rgba(255, 20, 14, 0.9);">
-                            <?= htmlspecialchars($row['rating']) ?>
-                        </span>
-                    </td>
-                    <td data-label="Actions (Mock)">
-                         <a href="delete.php?id=<?= $index + 100 ?>"
-                            onclick="return confirm('Are you sure you want to delete \'<?= htmlspecialchars($row['game_name']) ?>\'?');"
-                            class="delete-btn">
-                            [DELETE]
-                         </a>
-                         <a href="edit.php?ID=<?= $index + 100 ?>" class="edit-btn">
-                             [EDIT]
-                         </a>
-                    </td>
-                </tr>
-                <?php
-                    endforeach;
-                } else {
-                    // Original PHP logic if connection succeeded
+                // CHECK if results object is valid and has rows
+                if ($results && $results->num_rows > 0) {
                     while ($a_row = $results->fetch_assoc()): ?>
                     <tr>
                         <td data-label="Game Name">
@@ -453,13 +427,59 @@
                         </td>
                     </tr>
                     <?php endwhile;
-                }
+                } elseif ($results && $results->num_rows === 0) {
+                    echo "<tr><td colspan='4' style='text-align: center;'>No games found in the archive.</td></tr>";
+                } 
+                // Note: If connection failed, the error is displayed outside the table.
                 ?>
             </tbody>
         </table>
     </div>
 
     <footer>
-        <p>&copy; <?= date("Y") ?> **Game Archive** </p> </footer>
+        <p>&copy; <?= date("Y") ?> **Game Archive** </p> 
+    </footer>
+
+<script>
+    const searchInput = document.getElementById('live-search-input');
+    const resultsBody = document.getElementById('game-results-body');
+    
+    // CRITICAL: This now captures the actual game list generated by PHP
+    const defaultBodyContent = resultsBody.innerHTML; 
+
+    let debounceTimeout;
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimeout);
+        
+        debounceTimeout = setTimeout(() => {
+            const keywords = searchInput.value.trim();
+
+            if (keywords.length > 0) {
+                
+                resultsBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #FF1493;">Loading results...</td></tr>';
+
+                // Endpoint is live_search.php
+                fetch(`live_search.php?keywords=${encodeURIComponent(keywords)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        resultsBody.innerHTML = html;
+                    })
+                    .catch(error => {
+                        console.error('Fetch error:', error);
+                        resultsBody.innerHTML = `<tr><td colspan='4' style='color: red;'>Error fetching results: ${error.message}</td></tr>`;
+                    });
+            } else {
+                // Restore the original list of all games
+                resultsBody.innerHTML = defaultBodyContent;
+            }
+        }, 300); 
+    });
+</script>
 </body>
 </html>
