@@ -173,7 +173,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <label for="rating">Rating:</label>
             <input type="text" id="rating" name="rating" value="<?= htmlspecialchars($game['rating']) ?>" required>
 
-            <button type="submit">💾 Save Changes</button>
+            <button type="submit"> Save Changes</button>
         </form>
 
         <a href="games.php" class="back-btn">⬅ Back to List</a>
