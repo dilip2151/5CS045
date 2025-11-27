@@ -123,27 +123,31 @@
             /* Simplified focus glow */
             box-shadow: 0 0 18px #FF1493, inset 0 0 10px #FF1493;
         }
+        
+        /* --- Neon White Search Button Style --- */
         input[type="submit"] {
-            padding: 14px 30px; /* Smaller padding */
-            background-color: #00CED1;
-            color: #1F2328;
-            border: none;
+            padding: 14px 30px; 
+            background-color: #FFFFFF; /* White background */
+            color: #1F2328; /* Dark text for contrast */
+            border: 2px solid #FFFFFF;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
             text-transform: uppercase;
             font-size: 1em;
-            /* Simplified shadow */
-            box-shadow: 0 0 10px rgba(0, 206, 209, 0.6);
-            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            margin-left: 15px; /* Less space */
+            /* Neon White Glow */
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 5px rgba(255, 255, 255, 0.5);
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, color 0.3s;
+            margin-left: 15px;
         }
         input[type="submit"]:hover {
-            background-color: #FF1493; 
+            background-color: #FF1493; /* Reverts to Neon Pink on hover */
             color: #FFFFFF;
-            /* Simplified hover glow */
+            /* Pink hover glow */
             box-shadow: 0 0 20px rgba(255, 20, 147, 1);
         }
+        /* --- End Neon White Search Button Style --- */
+
         table {
             width: 100%;
             margin: 40px 0 0;
@@ -203,7 +207,7 @@
             text-shadow: none;
         }
 
-        /* --- NEW STYLES FOR DELETE AND EDIT BUTTONS --- */
+        /* --- NEW STYLES FOR DELETE and EDIT BUTTONS --- */
 
         .delete-btn {
             color: #FF0000; /* Neon Red */
@@ -412,7 +416,7 @@
                          <a href="delete.php?id=<?= $index + 100 ?>"
                             onclick="return confirm('Are you sure you want to delete \'<?= htmlspecialchars($row['game_name']) ?>\'?');"
                             class="delete-btn">
-                             [DELETE]
+                            [DELETE]
                          </a>
                          <a href="edit.php?ID=<?= $index + 100 ?>" class="edit-btn">
                              [EDIT]
