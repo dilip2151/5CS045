@@ -31,7 +31,7 @@
             width: 100%;
             height: 100%;
             /* Simple small grid pattern */
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiM0NDQ5NTMiIGZpbGwtb3BhY2VpdHk9IjAuMSI+PHBhdGggZD0iTjIwIDExLjA5NFYyMEgwdjguOTA2YzAtMi45NTkgMi44NDMtNC44NTUgNy41NjItNC44NTVgMTAuMDc0Ljk5IDIuNDMgMi41NTUtMi40MzUgMi41NTUtNy40OTUtMi41NTUgMy40NTMgMi41NTUgNy41NzcgMi41NTUgMi41NzcgMC00LjcxMi0xLjgzNS03LjU5Mi00Ljg1NVoiLz48L2c+PC9nPg==');
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiM0NDQ5NTMiIGZpbGwtb3BhY2VpdHk9IjAuMSI+PHBhdGggZD0wTjIwIDExLjA5NFYyMEgwdjguOTA2YzAtMi45NTkgMi44NDMtNC44NTUgNy41NjItNC44NTVgMTAuMDc0Ljk5IDIuNDMgMi41NTUtMi40MzUgMi41NTUtNy40OTUtMi41NTUgMy40NTMgMi41NTUgNy41NzcgMi41NTUgMi41NzcgMC00LjcxMi0xLjgzNS03LjU5Mi00Ljg1NVoiLz48L2c+PC9nPg==');
             opacity: 0.1;
             z-index: -1;
         }
@@ -202,6 +202,49 @@
             color: #00CED1;
             text-shadow: none;
         }
+
+        /* --- NEW STYLES FOR DELETE AND EDIT BUTTONS --- */
+
+        .delete-btn {
+            color: #FF0000; /* Neon Red */
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 0 0 5px rgba(255, 0, 0, 0.5);
+            font-weight: bold;
+            padding: 5px 10px;
+            border: 1px solid #FF0000;
+            border-radius: 4px;
+            background: rgba(255, 0, 0, 0.1);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .delete-btn:hover {
+            color: #FFFFFF;
+            background: #FF0000;
+            box-shadow: 0 0 15px #FF0000;
+            text-shadow: none;
+        }
+
+        .edit-btn {
+            color: #FF4500; /* Neon Orange */
+            text-shadow: 0 0 10px rgba(255, 69, 0, 0.8), 0 0 5px rgba(255, 69, 0, 0.5);
+            font-weight: bold;
+            padding: 5px 10px;
+            border: 1px solid #FF4500;
+            border-radius: 4px;
+            background: rgba(255, 69, 0, 0.1);
+            margin-left: 10px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .edit-btn:hover {
+            color: #1F2328;
+            background: #FF4500;
+            box-shadow: 0 0 15px #FF4500;
+            text-shadow: none;
+        }
+        
+        /* --- END NEW STYLES --- */
+
+
         footer {
             text-align: center;
             padding: 20px; /* Smaller padding */
@@ -255,6 +298,45 @@
                 padding: 10px;
                 font-size: 0.9em;
             }
+            
+            /* Hide columns on small screens */
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            tr {
+                margin-bottom: 15px;
+                border: 1px solid rgba(0, 206, 209, 0.4);
+                border-radius: 8px;
+            }
+
+            td {
+                border: none;
+                border-bottom: 1px solid rgba(255, 20, 147, 0.1);
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+                color: #00CED1;
+            }
+            
+            /* Remove column headers on mobile */
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
         }
 
         @media (max-width: 480px) {
@@ -315,22 +397,26 @@
                     foreach ($mock_data as $index => $row):
                 ?>
                 <tr>
-                    <td>
+                    <td data-label="Game Name">
                         <a href="details.php?id=<?= $index + 100 ?>">
                             <?= htmlspecialchars($row['game_name']) ?>
                         </a>
                     </td>
-                    <td><?= htmlspecialchars($row['released_date']) ?></td>
-                    <td>
+                    <td data-label="Release Date"><?= htmlspecialchars($row['released_date']) ?></td>
+                    <td data-label="IMDB Rating">
                         <span style="color: #FF1493; text-shadow: 0 0 10px rgba(255, 20, 147, 0.9);">
                             <?= htmlspecialchars($row['rating']) ?>
                         </span>
                     </td>
-                    <td> <a href="delete.php?id=<?= $index + 100 ?>"
-                           onclick="return confirm('Are you sure you want to delete \'<?= htmlspecialchars($row['game_name']) ?>\'?');"
-                           class="delete-btn">
-                            [DELETE]
-                        </a>
+                    <td data-label="Actions (Mock)">
+                         <a href="delete.php?id=<?= $index + 100 ?>"
+                            onclick="return confirm('Are you sure you want to delete \'<?= htmlspecialchars($row['game_name']) ?>\'?');"
+                            class="delete-btn">
+                             [DELETE]
+                         </a>
+                         <a href="edit.php?ID=<?= $index + 100 ?>" class="edit-btn">
+                             [EDIT]
+                         </a>
                     </td>
                 </tr>
                 <?php
@@ -339,29 +425,27 @@
                     // Original PHP logic if connection succeeded
                     while ($a_row = $results->fetch_assoc()): ?>
                     <tr>
-                        <td>
+                        <td data-label="Game Name">
                             <a href="details.php?id=<?= htmlspecialchars($a_row['game_ID']) ?>">
                                 <?= htmlspecialchars($a_row['game_name']) ?>
                             </a>
                         </td>
-                        <td><?= htmlspecialchars($a_row['released_date']) ?></td>
-                        <td>
+                        <td data-label="Release Date"><?= htmlspecialchars($a_row['released_date']) ?></td>
+                        <td data-label="IMDB Rating">
                             <span style="color: #FF1493; text-shadow: 0 0 10px rgba(255, 20, 147, 0.9);">
                                 <?= htmlspecialchars($a_row['rating']) ?>
                             </span>
                         </td>
-                        <td> <a href="delete.php?id=<?= htmlspecialchars($a_row['game_ID']) ?>" 
+                        <td data-label="Actions"> 
+                             <a href="delete.php?id=<?= htmlspecialchars($a_row['game_ID']) ?>" 
                                onclick="return confirm('Are you sure you want to delete \'<?= htmlspecialchars($a_row['game_name']) ?>\'?');"
                                class="delete-btn">
-                                [DELETE]
-                            </a>
+                                 [DELETE]
+                             </a>
+                             <a href="edit.php?ID=<?= htmlspecialchars($a_row['game_ID']) ?>" class="edit-btn">
+                                 [EDIT]
+                             </a>
                         </td>
-						
-					<td> 
-                        <a href="edit.php?ID=<?= htmlspecialchars($a_row['game_ID']) ?>" class="edit-btn">
-        [EDIT]
-    </a>
-                    </td>
                     </tr>
                     <?php endwhile;
                 }
